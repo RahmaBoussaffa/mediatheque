@@ -1,0 +1,613 @@
+openapi: 3.0.1
+info:
+  title: MEDIATHEQUE
+  version: 1.0.5
+  description: API de gestion des abonnés et des emprunts pour une médiathèque.
+servers:
+  - url: "http://localhost:5000"
+    description: Serveur de développement
+tags:
+- name: Gestion Abonne
+- name : Gestion Document
+- name : Gestion Emprunt
+
+
+paths:
+  /abonnee/insert_abonnee:
+    post:
+      tags:
+      - Gestion Abonne
+      summary: Ajouter un nouvel abonné
+      description: Cette route permet d'ajouter un nouvel abonné dans la médiathèque.
+      operationId: ajouterAbonne
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nom:
+                  type: string
+                  description: Nom de l'abonné
+                prenom:
+                  type: string
+                  description: Prénom de l'abonné
+                adresse:
+                  type: string
+                  description: Adresse de l'abonné
+      responses:
+        '201':
+          description: Abonné ajouté avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  id:
+                    type: string
+        '400':
+          description: Champs manquants ou invalides
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /abonnee/get_abonnes:
+    get:
+      tags:
+      - Gestion Abonne
+      summary: Récupérer la liste des abonnés
+      description: Cette route permet de récupérer la liste de tous les abonnés.
+      operationId: getAbonnes
+      responses:
+        '200':
+          description: Liste des abonnés récupérée avec succès
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    nom:
+                      type: string
+                    prenom:
+                      type: string
+                    adresse:
+                      type: string
+                    date_inscription:
+                      type: string 
+  /update_abonnes/{id_abonne}:
+    put:
+      tags:
+      - Gestion Abonne
+      summary: Modifier les informations d'un abonné
+      description: Cette route permet de modifier les informations d'un abonné existant.
+      operationId: modifierAbonne
+      parameters:
+        - name: id_abonne
+          in: path
+          required: true
+          description: ID de l'abonné à modifier
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nom:
+                  type: string
+                  description: Nouveau nom de l'abonné
+                prenom:
+                  type: string
+                  description: Nouveau prénom de l'abonné
+                adresse:
+                  type: string
+                  description: Nouvelle adresse de l'abonné
+      responses:
+        '200':
+          description: Abonné modifié avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '404':
+          description: Abonné non trouvé
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /delete_abonnee/{id_abonne}:
+    delete:
+      tags:
+      - Gestion Abonne
+      summary: Supprimer un abonné
+      description: Cette route permet de supprimer un abonné à partir de son ID.
+      operationId: supprimerAbonne
+      parameters:
+        - name: id_abonne
+          in: path
+          required: true
+          description: ID de l'abonné à supprimer
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Abonné supprimé avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '404':
+          description: Abonné non trouvé
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /edit_abonne/{id_abonne}:
+    get:
+      tags:
+      - Gestion Abonne
+      summary: Obtenir les informations d'un abonné pour modification
+      description: Cette route permet d'afficher les informations d'un abonné afin de les modifier via une page HTML.
+      operationId: editAbonne
+      parameters:
+        - name: id_abonne
+          in: path
+          required: true
+          description: ID de l'abonné à modifier
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Informations de l'abonné récupérées avec succès
+          content:
+            text/html:
+              schema:
+                type: string
+        '404':
+          description: Abonné non trouvé
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+  /insert_emprunt:
+    post:
+      tags:
+      - Gestion Emprunt
+      summary: Ajouter un nouvel emprunt
+      description: Cette route permet d'ajouter un nouvel emprunt à un abonné pour un document donné.
+      operationId: insertEmprunt
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                abonne_id:
+                  type: string
+                  description: ID de l'abonné
+                document_id:
+                  type: string
+                  description: ID du document
+                date_retour_prevue:
+                  type: string
+                  format: date
+                  description: Date prévue de retour
+      responses:
+        '201':
+          description: Emprunt ajouté avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  id:
+                    type: string
+        '404':
+          description: Abonné ou document non trouvé
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /get_emprunts:
+    get:
+      tags:
+      - Gestion Emprunt
+      summary: Récupérer tous les emprunts
+      description: Cette route retourne une liste de tous les emprunts existants.
+      operationId: getEmprunts
+      responses:
+        '200':
+          description: Liste des emprunts récupérée avec succès
+          content:
+            text/html:
+              schema:
+                type: string
+
+  /get_emprunt/{id_emprunt}:
+    get:
+      tags:
+      - Gestion Emprunt
+      summary: Récupérer un emprunt spécifique
+      description: Cette route permet de récupérer les détails d'un emprunt en fonction de son ID.
+      operationId: getEmprunt
+      parameters:
+        - name: id_emprunt
+          in: path
+          required: true
+          description: ID de l'emprunt
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Détails de l'emprunt récupérés avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                  abonne_id:
+                    type: string
+                  document_id:
+                    type: string
+                  date_emprunt:
+                    type: string
+                  date_retour_prevue:
+                    type: string
+                  statut:
+                    type: string
+        '404':
+          description: Emprunt non trouvé
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /delete_emprunt/{id_emprunt}:
+    delete:
+      tags:
+      - Gestion Emprunt
+      summary: Supprimer un emprunt
+      description: Cette route permet de supprimer un emprunt en fonction de son ID.
+      operationId: deleteEmprunt
+      parameters:
+        - name: id_emprunt
+          in: path
+          required: true
+          description: ID de l'emprunt
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Emprunt supprimé avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '404':
+          description: Emprunt non trouvé
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /get_emprunts_abonne/{id_abonne}:
+    get:
+      tags:
+      - Gestion Emprunt
+      summary: Récupérer les emprunts d'un abonné
+      description: Cette route permet de récupérer tous les emprunts associés à un abonné donné.
+      operationId: getEmpruntsAbonne
+      parameters:
+        - name: id_abonne
+          in: path
+          required: true
+          description: ID de l'abonné
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Liste des emprunts récupérée avec succès
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    _id:
+                      type: string
+                    document_id:
+                      type: string
+                    date_emprunt:
+                      type: string
+                    date_retour_prevue:
+                      type: string
+                    statut:
+                      type: string
+        '404':
+          description: Abonné non trouvé
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+  /insert_document:
+    post:
+      tags:
+      - Gestion Document
+      summary: Insert a new document
+      description: Adds a new document to the database.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - titre
+                - type
+                - auteur
+              properties:
+                titre:
+                  type: string
+                  description: Title of the document.
+                type:
+                  type: string
+                  description: Type or category of the document.
+                auteur:
+                  type: string
+                  description: Author of the document.
+      responses:
+        '201':
+          description: Document successfully added.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  id:
+                    type: string
+        '400':
+          description: Missing required fields.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /get_documents:
+    get:
+      tags:
+      - Gestion Document
+      summary: Get all documents
+      description: Retrieves a list of all documents.
+      responses:
+        '200':
+          description: A list of documents.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    _id:
+                      type: string
+                    titre:
+                      type: string
+                    type:
+                      type: string
+                    auteur:
+                      type: string
+                    date_publication:
+                      type: string
+                      format: date-time
+                    disponible:
+                      type: boolean
+
+  /update_document/{id_document}:
+    put:
+      tags:
+      - Gestion Document
+      summary: Update an existing document
+      description: Updates a document by its ID.
+      parameters:
+        - name: id_document
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - titre
+                - type
+                - auteur
+              properties:
+                titre:
+                  type: string
+                type:
+                  type: string
+                auteur:
+                  type: string
+                disponible:
+                  type: boolean
+                  description: Availability status (optional).
+      responses:
+        '200':
+          description: Document successfully updated.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '404':
+          description: Document not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /delete_document/{id_document}:
+    delete:
+      tags:
+      - Gestion Document
+      summary: Delete a document
+      description: Deletes a document by its ID.
+      parameters:
+        - name: id_document
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Document successfully deleted.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '404':
+          description: Document not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /edit_document/{id_document}:
+    get:
+      tags:
+      - Gestion Document
+      summary: Edit a document
+      description: Retrieves the details of a document by its ID for editing.
+      parameters:
+        - name: id_document
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Document details retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                  titre:
+                    type: string
+                  type:
+                    type: string
+                  auteur:
+                    type: string
+                  date_publication:
+                    type: string
+                    format: date-time
+                  disponible:
+                    type: boolean
+        '404':
+          description: Document not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+
+components:
+  schemas:
+    Abonne:
+      type: object
+      properties:
+        id:
+          type: string
+        nom:
+          type: string
+        prenom:
+          type: string
+        adresse:
+          type: string
+        date_inscription:
+          type: string
+        emprunts_en_cours:
+          type: array
+          items:
+            type: object
+        historique_emprunts:
+          type: array
+          items:
+            type: object
+

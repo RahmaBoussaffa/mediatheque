@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Mediatheque</title>
+    <meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,700|Roboto:300,400,700" rel="stylesheet">
+    <style>
+      body {
+        margin: 0;padding: 0;
+      }
+      .tryBtn{
+        background-color: rgb(24, 111, 175);
+        border: none;
+        color:white;
+        line-height: 20px;
+        padding: 3px 10px;
+        color: rgb(255, 255, 255);
+        text-transform: uppercase;
+        font-family: Montserrat, sans-serif;
+        margin-right:3px;
+        cursor: pointer;
+      }
+      .swagger-ui .opblock.opblock-get{
+      overflow:auto;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="redoc-container"></div>
+    <script src="https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js"> </script>
+    <script  src="https://cdn.jsdelivr.net/gh/wll8/redoc-try@1.4.1/dist/try.js"></script>
+  <script>
+      initTry({
+      openApi: "/static/swagger.yaml",
+      redocOptions: {scrollYOffset: 0},
+    })
+
+  </script>
+  </body>
+</html>

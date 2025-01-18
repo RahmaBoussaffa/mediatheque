@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Médiathèque - Gestion des Abonnés & Documents</title>
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f7fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            background-color: #4caf50;
+            color: white;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 15px;
+            position: sticky;
+            top: 0;
+            width: 100%;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 16px;
+            padding: 10px 15px;
+            transition: background-color 0.3s ease;
+        }
+
+        .navbar a:hover {
+            background-color: #ff6f61;
+        }
+
+        /* Main Content */
+        .content {
+            padding: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1, h2 {
+            color: #ff6f61;
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        /* Form Styles */
+        .form-container {
+            display: flex;
+            justify-content: space-around;
+            flex-direction: row;
+            margin-bottom: 40px;
+        }
+
+        form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            max-width: 900px;
+            width: 100%;
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        form input {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            background-color: #f1f1f1;
+            color: #333;
+            width: 100%;
+        }
+
+        form input:focus {
+            border-color: #ff6f61;
+            outline: none;
+        }
+
+        form button {
+            grid-column: span 2;
+            padding: 12px;
+            background-color: #ff6f61;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: background-color 0.3s ease;
+        }
+
+        form button:hover {
+            background-color: #e55b4f;
+        }
+
+        /* Table Styles */
+        .table-container {
+            margin: 0 auto;
+            width: 80%;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #ffffff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        table th, table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        table th {
+            background-color: #ff6f61;
+            color: white;
+            font-weight: bold;
+        }
+
+        table tbody tr:hover {
+            background-color: #f9e4b7;
+        }
+
+        /* Button Styles */
+        button {
+            padding: 10px 14px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        button a {
+            color: white;
+            text-decoration: none;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .form-container {
+                justify-content: flex-start;
+            }
+
+            form {
+                grid-template-columns: 1fr;
+            }
+
+            .table-container {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <div class="navbar">
+        <a href="/abonnee/get_abonnes">Abonnés</a>
+        <a href="/document/get_documents">Documents</a>
+        <a href="/emprunt/get_emprunts">Emprunts</a>
+    </div>
+
+    <div class="content">
+        <h1>Gestion de la Médiathèque</h1>
+
+        <!-- Formulaire d'ajout d'abonné -->
+        <div class="form-container">
+            <form id="abonneeForm">
+                <h2>Ajouter un Abonné</h2> <br>
+                <input type="text" id="nom" name="nom" placeholder="Nom" required>
+                <input type="text" id="prenom" name="prenom" placeholder="Prénom" required>
+                <input type="text" id="adresse" name="adresse" placeholder="Adresse" required>
+                <button type="submit">Ajouter</button>
+            </form>
+        </div>
+
+        <!-- Liste des Abonnés -->
+        <div class="table-container">
+            <h2>Liste des Abonnés</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nom</th>
+                        <th>Prénom</th>
+                        <th>Adresse</th>
+                        <th>Date d'inscription</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for abonne in abonnes %}
+                    <tr>
+                        <td>{{ abonne.id }}</td>
+                        <td>{{ abonne.nom }}</td>
+                        <td>{{ abonne.prenom }}</td>
+                        <td>{{ abonne.adresse }}</td>
+                        <td>{{ abonne.date_inscription }}</td>
+                        <td>
+                            <button><a href="/abonnee/edit_abonne/{{ abonne.id }}">Modifier</a></button>
+                            <button onclick="deleteAbonne('{{ abonne.id }}')">Supprimer</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Ajout d'un abonné
+        document.getElementById("abonneeForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            let data = {
+                nom: document.getElementById("nom").value,
+                prenom: document.getElementById("prenom").value,
+                adresse: document.getElementById("adresse").value
+            };
+
+            fetch("/abonnee/insert_abonnee", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => response.json())
+                .then(data => location.reload())
+                .catch(error => console.error("Erreur :", error));
+        });
+
+        // Suppression d'un abonné
+        function deleteAbonne(id) {
+            if (confirm("Voulez-vous vraiment supprimer cet abonné ?")) {
+                fetch(`/abonnee/delete_abonnee/${id}`, {
+                    method: "DELETE"
+                })
+                    .then(response => response.json())
+                    .then(data => location.reload())
+                    .catch(error => console.error("Erreur :", error));
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Médiathèque - Gestion des Abonnés & Documents</title>
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f7fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            background-color: #4caf50;
+            color: white;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 15px;
+            position: sticky;
+            top: 0;
+            width: 100%;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 16px;
+            padding: 10px 15px;
+            transition: background-color 0.3s ease;
+        }
+
+        .navbar a:hover {
+            background-color: #ff6f61;
+        }
+
+        /* Main Content */
+        .content {
+            padding: 30px;
+            margin: 0 auto;
+        }
+
+        h1, h2 {
+            color: #ff6f61;
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        /* Form Styles */
+        .form-container {
+            display: flex;
+            justify-content: space-around;
+            flex-direction: row;
+            margin-bottom: 40px;
+        }
+
+        form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            max-width: 900px;
+            width: 100%;
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        form input, form select {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            background-color: #f1f1f1;
+            color: #333;
+            width: 100%;
+        }
+
+        form input:focus, form select:focus {
+            border-color: #ff6f61;
+            outline: none;
+        }
+
+        form button {
+            grid-column: span 2;
+            padding: 12px;
+            background-color: #ff6f61;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: background-color 0.3s ease;
+        }
+
+        form button:hover {
+            background-color: #e55b4f;
+        }
+
+        /* Table Styles */
+        .table-container {
+            margin: 0 auto;
+            width: 80%;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #ffffff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        table th, table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        table th {
+            background-color: #ff6f61;
+            color: white;
+            font-weight: bold;
+        }
+
+        table tbody tr:hover {
+            background-color: #f9e4b7;
+        }
+
+        /* Button Styles */
+        button {
+            padding: 10px 14px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        button a {
+            color: white;
+            text-decoration: none;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .form-container {
+                justify-content: flex-start;
+            }
+
+            form {
+                grid-template-columns: 1fr;
+            }
+
+            .table-container {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <div class="navbar">
+        <a href="/abonnee/get_abonnes">Abonnés</a>
+        <a href="/document/get_documents">Documents</a>
+        <a href="/emprunt/get_emprunts">Emprunts</a>
+    </div>
+
+    <div class="content">
+        <h1>Gestion de la Médiathèque</h1>
+
+        <!-- Formulaire d'ajout de document -->
+        <div class="form-container">
+            <form id="documentForm" style="display: flex;flex-direction: column; align-items: center; justify-content: center;">
+                <h2>Ajouter un Document</h2> <br>
+                <div style="max-width: fit-content;">
+                    <label for="type">Type</label>
+                <select id="type" name="type" required>
+                    <option value="Livre">Livre</option>
+                    <option value="Magazine">Magazine</option>
+                    <option value="DVD">DVD</option>
+                    <option value="CD">CD</option>
+                    <option value="E-book">E-book</option>
+                </select>
+                </div><br>
+                <input type="text" id="titre" name="titre" placeholder="Titre" style="max-width: fit-content;" required> 
+                <br>
+                <input style="max-width: fit-content;" type="text" id="auteur" name="auteur" placeholder="Auteur" required>
+                <button type="submit">Ajouter</button>
+            </form>
+        </div>
+
+        <!-- Liste des Documents -->
+        <div class="table-container">
+            <h2>Liste des Documents</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Titre</th>
+                        <th>Type</th>
+                        <th>Auteur</th>
+                        <th>Date de publication</th>
+                        <th>Disponible</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for document in documents %}
+                    <tr>
+                        <td>{{ document.id }}</td>
+                        <td>{{ document.titre }}</td>
+                        <td>{{ document.type }}</td>
+                        <td>{{ document.auteur }}</td>
+                        <td>{{ document.date_publication }}</td>
+                        <td>{{ "Oui" if document.disponible else "Non" }}</td>
+                        <td>
+                            <button><a href="/document/edit_document/{{ document.id }}">Modifier</a></button>
+                            <button onclick="deleteDocument('{{ document.id }}')">Supprimer</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+
+        // Ajout d'un document
+        document.getElementById("documentForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            let data = {
+                titre: document.getElementById("titre").value,
+                type: document.getElementById("type").value,
+                auteur: document.getElementById("auteur").value
+            };
+
+            fetch("/document/insert_document", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => response.json())
+                .then(data => location.reload())
+                .catch(error => console.error("Erreur :", error));
+        });
+
+        // Suppression d'un document
+        function deleteDocument(id) {
+            if (confirm("Voulez-vous vraiment supprimer ce document ?")) {
+                fetch(`/document/delete_document/${id}`, {
+                    method: "DELETE"
+                })
+                    .then(response => response.json())
+                    .then(data => location.reload())
+                    .catch(error => console.error("Erreur :", error));
+            }
+        }
+    </script>
+</body>
+
+</html>
